@@ -1,0 +1,55 @@
+name: Campaign Copilot production offline podcasts
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'public/offline-podcast-launcher.js'
+      - 'public/offline-podcast-sw.js'
+      - 'public/podcasts/dnd.json'
+      - 'tools/offline-podcast-production.mjs'
+      - '.github/workflows/offline-podcast-production.yml'
+permissions:
+  contents: read
+concurrency:
+  group: campaign-offline-podcasts
+  cancel-in-progress: true
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      titles: ${{ steps.m.outputs.titles }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: m
+        run: |
+          node <<'NODE'
+          const fs=require('fs'),a=JSON.parse(fs.readFileSync('public/podcasts/dnd.json','utf8')).filter(e=>e.audio).map(e=>e.title);fs.appendFileSync(process.env.GITHUB_OUTPUT,'titles='+JSON.stringify(a)+'\n');console.log('Direct episodes',a.length)
+          NODE
+  production-offline:
+    needs: prepare
+    strategy: { fail-fast: false, max-parallel: 12, matrix: { title: ${{ fromJSON(needs.prepare.outputs.titles) }} } }
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - run: |
+          npm install --no-save --package-lock=false playwright@1.58.2
+          npx playwright@1.58.2 install --with-deps chromium
+          sudo apt-get install -y pulseaudio ffmpeg
+          pulseaudio --start --exit-idle-time=-1
+          pactl load-module module-null-sink sink_name=offline_test
+          pactl set-default-sink offline_test
+      - run: node tools/offline-podcast-production.mjs
+        env:
+          EPISODE_TITLE: ${{ matrix.title }}
+          PRODUCTION_URL: https://parris-tech-services.github.io/campaign-copilot/
+          PULSE_SINK: offline_test
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: campaign-offline-evidence-${{ strategy.job-index }}
+          path: offline-evidence/
