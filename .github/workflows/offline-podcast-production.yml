@@ -29,7 +29,11 @@ jobs:
           NODE
   production-offline:
     needs: prepare
-    strategy: { fail-fast: false, max-parallel: 12, matrix: { title: ${{ fromJSON(needs.prepare.outputs.titles) }} } }
+    strategy:
+      fail-fast: false
+      max-parallel: 12
+      matrix:
+        title: ${{ fromJSON(needs.prepare.outputs.titles) }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
