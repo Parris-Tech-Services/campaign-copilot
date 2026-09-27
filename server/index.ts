@@ -24,8 +24,9 @@ app.get('/health', (req, res) => {
 app.use('/api', aiRouter);
 
 // Start server
-app.listen(PORT, () => {
-  console.log(`🚀 Campaign Copilot API server running on http://localhost:${PORT}`);
+const HOST = process.env.HOST || '127.0.0.1';
+app.listen(PORT, HOST, () => {
+  console.log(`🚀 Campaign Copilot API server running on http://${HOST}:${PORT}`);
   console.log(`📡 Groq API: ${process.env.GROQ_API_KEY ? '✅ Configured' : '⚠️  Not configured'}`);
   console.log(`📡 OpenAI API: ${process.env.OPENAI_API_KEY ? '✅ Configured' : '⚠️  Not configured (using rule-based fallback)'}`);
 });
