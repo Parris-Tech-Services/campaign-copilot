@@ -1,15 +1,6 @@
 name: Campaign Copilot production offline podcasts
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'index.html'
-      - 'public/offline-podcast-launcher.js'
-      - 'public/offline-podcast-sw.js'
-      - 'public/podcasts/dnd.json'
-      - 'tools/offline-podcast-production.mjs'
-      - '.github/workflows/offline-podcast-production.yml'
 permissions:
   contents: read
 concurrency:
@@ -57,3 +48,4 @@ jobs:
         with:
           name: campaign-offline-evidence-${{ strategy.job-index }}
           path: offline-evidence/
+          retention-days: 1
