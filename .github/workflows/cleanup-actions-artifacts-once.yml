@@ -1,8 +1,5 @@
 name: One-time Actions artifact cleanup
 on:
-  push:
-    paths:
-      - '.github/workflows/cleanup-actions-artifacts-once.yml'
   workflow_dispatch:
 
 permissions:
