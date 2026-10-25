@@ -1,3 +1,5 @@
+> **Clarification (2026-10-25):** This document is an **original, separate mystery**, not the user-requested faithful adaptation of *The Adventure Zone: Amnesty* episodes 1–5. For the canon-grounded Hunt for the Beast fan session companion, use [AMNESTY_HUNT_FOR_THE_BEAST_EPISODES_1_TO_5_FAN_RUN_SHEET.md](./AMNESTY_HUNT_FOR_THE_BEAST_EPISODES_1_TO_5_FAN_RUN_SHEET.md).
+
 # THE LAST LAUGH OF BRIARWICK
 ### An original dark-fantasy horror-comedy mystery for Monster of the Week
 **Keeper edition — complete spoilers.** Three hunters (Dylan, Gilbert, Josh), one first-time Keeper. **17:00–22:00 maximum; complete experience achievable by 20:00 (3 hours).**  
