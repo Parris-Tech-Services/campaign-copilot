@@ -6,7 +6,7 @@ import { generateNextOptions } from './logic/nextOptionsEngine';
 /** Public static builds must not send campaign context to localhost on a visitor's device. */
 export function resolveApiUrl(configured: string | undefined, isDevelopment: boolean): string | null {
   const value = configured?.trim();
-  return value ? value.replace(/\\/+$/, '') : (isDevelopment ? 'http://localhost:3001' : null);
+  return value ? value.replace(/[/]+$/, '') : (isDevelopment ? 'http://localhost:3001' : null);
 }
 
 const API_URL = resolveApiUrl(import.meta.env.VITE_API_URL, import.meta.env.DEV);
