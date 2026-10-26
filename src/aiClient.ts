@@ -3,7 +3,13 @@
 import type { SessionContext, NextOption } from './types';
 import { generateNextOptions } from './logic/nextOptionsEngine';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+/** Public static builds must not send campaign context to localhost on a visitor's device. */
+export function resolveApiUrl(configured: string | undefined, isDevelopment: boolean): string | null {
+  const value = configured?.trim();
+  return value ? value.replace(/\\/+$/, '') : (isDevelopment ? 'http://localhost:3001' : null);
+}
+
+const API_URL = resolveApiUrl(import.meta.env.VITE_API_URL, import.meta.env.DEV);
 
 /**
  * Generates 3 next options based on session context.
@@ -14,6 +20,10 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
  * @returns Promise resolving to 3 next options
  */
 export async function getNextOptions(ctx: SessionContext): Promise<NextOption[]> {
+  if (!API_URL) {
+    return generateNextOptions(ctx).map(opt => ({ ...opt, source: 'rules-fallback' }));
+  }
+
   try {
     const response = await fetch(`${API_URL}/api/next-options`, {
       method: 'POST',

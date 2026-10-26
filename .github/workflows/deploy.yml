@@ -30,6 +30,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Test backend URL safety
+        run: npx vitest run src/aiClient.test.ts
+
       - name: Build
         run: npm run build
 
